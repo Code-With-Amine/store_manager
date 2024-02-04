@@ -20,11 +20,13 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->string('ProdName');
+            $table->string('ProdLogo');
             $table->double('price', 8, 2);
             $table->integer('Qte');
             $table->integer('WarnQte');
             $table->date('FactoryDate');
             $table->date('ExperDate')->nullable();
+            $table->timestamps();
         });        
         
     }

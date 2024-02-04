@@ -13,25 +13,16 @@ class CreateAnalyticsTable extends Migration
     {
         Schema::create('analytics', function (Blueprint $table) {
             $table->integer('ProdRef')
-            ->foreign()
-            ->references('ref')
-            ->on('Products');
-            $table->string('userName');
+                ->foreign()
+                ->references('ref')
+                ->on('Products');
+            $table->integer('year');
+            $table->integer('month');
             $table->float('NbrSales');
             $table->float('TotalSales');
             $table->float('Profits');
-            $table->integer('year');
-            $table->integer('month');
-
             // Create composed primary key
-            $table->primary(['ProdRef', 'userName']);
-
-            $table->foreign('userName')
-                ->references('userName')
-                ->on('users')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->primary(['ProdRef', 'year', 'month']);
         });
     }
 

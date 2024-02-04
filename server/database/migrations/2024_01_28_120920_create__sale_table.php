@@ -20,6 +20,7 @@ return new class extends Migration
             $table->float('SoldPrice');
             $table->integer('SoldQte');
             $table->date('SoldDate');
+            $table->timestamps();
         });
     }
 
