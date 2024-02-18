@@ -173,6 +173,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        // config/app.php
         App\Providers\RouteServiceProvider::class,
     ])->toArray(),
 

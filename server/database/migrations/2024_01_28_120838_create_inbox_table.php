@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('Inbox', function (Blueprint $table) {
             $table->id();
-            $table->string('userName');
-            $table->foreign('userName')
-            ->references('userName')
+            $table->string('email');
+            $table->foreign('email')
+            ->references('email')
             ->on('users')
             ->constrained()
             ->onUpdate('cascade')
