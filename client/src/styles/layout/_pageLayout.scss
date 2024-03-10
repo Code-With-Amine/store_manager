@@ -1,8 +1,7 @@
 @import '../utils/variables';
 
-.dashnoard-container{
-    background-color: $primary-color;
+.page-container{
     width: 100vw;
     height: 100vh;
-    color: $text-color;
+    position: fixed;
 }

@@ -1,16 +1,18 @@
-import React from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Dashborad() {
-  const {email} = useParams();
+  const categories = useSelector((state) => state.storeReducer.categories);
+  console.log(categories);
   const navigate = useNavigate();
-  if(!email){
-    navigate('/');
-  }
-  
-  return (
-    <div className='dashnoard-container'>Dashborad</div>
-  )
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/");
+    }
+  });
+
+  return <div className="">Dashborad</div>;
 }
 
-export default Dashborad
+export default Dashborad;

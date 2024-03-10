@@ -27,7 +27,7 @@ return new class extends Migration
             $table->date('FactoryDate');
             $table->date('ExperDate')->nullable();
             $table->timestamps();
-        });        
+        });
         
     }
 
