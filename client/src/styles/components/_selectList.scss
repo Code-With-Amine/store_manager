@@ -1,0 +1,12 @@
+.addSelect{
+
+    border-radius: 22px;
+    -webkit-border-radius: 22px;
+    -moz-border-radius: 22px;
+    -ms-border-radius: 22px;
+    -o-border-radius: 22px;
+    &:focus{
+        outline: none;
+        border: none;
+    }
+}

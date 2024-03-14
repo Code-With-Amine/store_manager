@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-
-use function PHPUnit\Framework\isEmpty;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
@@ -18,8 +16,12 @@ class CategoryController extends Controller
         ]);
 
         $filedData['email'] = $userEmail;
-        if ($request->hasFile('catPhoto')) {
-            $filedData['catPhoto'] = $request->file('catPhoto')->store('catLogos', 'public');
+        if ($request->has('catPhoto')) {
+            $base64Image = $request->input('catPhoto');
+            $imageData = base64_decode($base64Image);
+            $fileName = uniqid() . '.jpg'; // Generate unique filename
+            Storage::disk('public')->put('catLogos/' . $fileName, $imageData);
+            $filedData['catPhoto'] = $fileName; // Store filename in database
         }
         Category::create($filedData);
         return response()->json([
@@ -43,43 +45,42 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-    $category = Category::findOrFail($id);
+        $category = Category::findOrFail($id);
 
-    $filedData = $request->validate([
-        'CatName' => 'required',
-    ]);
+        $filedData = $request->validate([
+            'CatName' => 'required',
+        ]);
 
-    $category->update($filedData);
+        $category->update($filedData);
 
-    if ($request->hasFile('catPhoto')) {
-        // Delete the old image file if exists
-        if (!empty($category->catPhoto)) {
-            Storage::disk('public')->delete($category->catPhoto);
+        if ($request->hasFile('catPhoto')) {
+            // Delete the old image file if exists
+            if (!empty($category->catPhoto)) {
+                Storage::disk('public')->delete($category->catPhoto);
+            }
+            // Store the new image file
+            $category->catPhoto = $request->file('catPhoto')->store('catLogos', 'public');
+            $category->save();
         }
-        // Store the new image file
-        $category->catPhoto = $request->file('catPhoto')->store('catLogos', 'public');
-        $category->save();
-    }
 
-    return response()->json([
-        'message' => 'Category updated successfully',
-    ]);
-}
+        return response()->json([
+            'message' => 'Category updated successfully',
+        ]);
+    }
 
     public function destroy($id)
     {
-    $category = Category::findOrFail($id);
+        $category = Category::findOrFail($id);
 
-    // Delete the image from the folder if it exists
-    if (!empty($category->catPhoto)) {
-        Storage::disk('public')->delete($category->catPhoto);
+        // Delete the image from the folder if it exists
+        if (!empty($category->catPhoto)) {
+            Storage::disk('public')->delete($category->catPhoto);
+        }
+
+        $category->delete();
+
+        return response()->json([
+            'message' => 'Category deleted successfully',
+        ]);
     }
-
-    $category->delete();
-
-    return response()->json([
-        'message' => 'Category deleted successfully',
-    ]);
-    }
-
 }

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { axiosClient } from "../api/axios";
 import { useNavigate } from 'react-router-dom';
+import { storeOnLocalStorage } from "../functions/setItemsLocalStorage";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -63,6 +64,7 @@ function SignUp() {
       console.log(res.data);
       setMessage(res.data.message);
       if(res.data.status == 201){
+        storeOnLocalStorage(res.data);
         return navigate(`/dashbord/${res.data.user}`);
       }
     } catch (err) {

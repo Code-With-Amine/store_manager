@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { axiosClient } from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import { fetchCategories } from "../feauturs/storeReducer";
-import { useDispatch } from 'react-redux';
+import { storeOnLocalStorage } from "../functions/setItemsLocalStorage";
 
 function Login() {
   const [formData, setFromData] = useState({
@@ -12,8 +11,6 @@ function Login() {
   const [messg, setMessg] = useState(null);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const handelChange = (e) => {
     const { name, value } = e.target;
     setFromData((prev) => ({ ...prev, [name]: value }));
@@ -24,9 +21,8 @@ function Login() {
       const sanctum = axiosClient.get("/sanctum/csrf-cookie");
       const res = await axiosClient.post("/api/login", formData);
       if (res.data.status == 200) {
-        localStorage.setItem('token',res.data.token);
-        dispatch(fetchCategories()); // Dispatch the thunk to fetch data
-        return navigate('/dashbord');
+        storeOnLocalStorage(res.data);
+        return navigate("/dashbord");
       }
       setMessg(res.data.message);
     } catch (err) {
@@ -44,7 +40,7 @@ function Login() {
         )}
         <div className="form--dataInput">
           <label>User Name</label>
-          <input name="userName" onChange={handelChange} />
+          <input name="userName" onChange={handelChange} placeholder="ACME" />
         </div>
         <div className="form--dataInput">
           <label>Password</label>

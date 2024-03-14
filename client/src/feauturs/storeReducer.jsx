@@ -11,7 +11,7 @@ export const fetchCategories = createAsyncThunk(
     };
     axiosClient.get("/sanctum/csrf-cookie");
     const res = await axiosClient.get("/api/categories", { headers });
-    return res.data;
+    return res.data.data;
   }
 );
 
@@ -19,10 +19,15 @@ export const storeReducer = createSlice({
   name: "storeReducer",
   initialState: {
     categories: [],
+    products: [],
     loading: false,
     error: null,
   },
-  reducers: {}, // No reducers defined here (handled by thunks)
+  reducers: {
+    fillProducts: (state, action) => {
+      state.products = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCategories.pending, (state) => {
@@ -40,5 +45,6 @@ export const storeReducer = createSlice({
   },
 });
 
+export const { fillProducts } = storeReducer.actions;
 export const { dispatch } = storeReducer; // Dispatch function for thunks
 export default storeReducer.reducer;

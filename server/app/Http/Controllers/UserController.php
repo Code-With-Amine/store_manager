@@ -37,7 +37,7 @@ class UserController extends Controller
         $user = User::create($formFields);
         $token = $user->createToken('auth_token')->plainTextToken;
         if ($user) {
-            return response()->json(['message' => 'Account created successfully', 'token' => $token, 'status' => 201]);
+            return response()->json(['message' => 'Account created successfully', 'token' => $token, 'status' => 201, 'user' => $user]);
         } else {
             return response()->json(['message' => 'Something went wrong, please try again', 'status' => 500]);
         }
@@ -49,7 +49,7 @@ class UserController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             $token = $user->createToken('auth_token')->plainTextToken;
             //$request->session()->regenerate();
-            return response()->json(['message' => 'logged in successfully', 'token' => $token, 'status' => 200]);
+            return response()->json(['message' => 'logged in successfully', 'token' => $token, 'status' => 200, 'user' => $user]);
         }
 
 

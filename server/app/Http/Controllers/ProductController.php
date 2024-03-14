@@ -11,18 +11,23 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // Validation
-       $products = $request->validate([
+        $products = $request->validate([
             'CatId' => 'required|exists:categories,CatId',
             'ProdName' => 'required|string',
-            'ProdLogo' => 'required|string',
             'price' => 'required|numeric',
             'Qte' => 'required|integer',
             'WarnQte' => 'required|integer',
             'FactoryDate' => 'required|date',
             'ExperDate' => 'nullable|date',
         ]);
-        if($request->hasFile('ProdLogo')){
-            $product['ProdLogo'] = $request->file('ProdLogo')->store('prodLogos', 'public');
+        if ($request->has('ProdLogo')) {
+            $base64Image = $request->input('ProdLogo');
+            $imageData = base64_decode($base64Image);
+            $fileName = uniqid() . '.jpg';
+            Storage::disk('public')->put('prodLogos/' . $fileName, $imageData);
+            $products['ProdLogo'] = $fileName; // Store filename in database
+        } else {
+            $products['ProdLogo'] = 'prodLogos/noProd';
         }
         // Store the data
         Product::create($products);
@@ -30,11 +35,17 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product created successfully'], 201);
     }
 
-    public function index($categoryId)
+    public function index($categoryId, $p)
     {
-        $products = Product::where('CatId', $categoryId)->get();
-
-        return response()->json(['data' => $products], 200);
+        $productsPerPage = 3; 
+        $numberProducts = Product::where('CatId', $categoryId)->get();
+        $products = Product::where('CatId', $categoryId)
+                    ->skip($productsPerPage * $p)
+                    ->limit($productsPerPage)
+                    ->get();
+        return response()->json(['data' => $products, 'page_number' => $p + 1,
+                                  'total_product' => sizeof($numberProducts)
+                                ], 200);
     }
 
     public function find($productId)
